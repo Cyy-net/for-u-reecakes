@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>heheh loveu</title>
+    <style>
+        :root { 
+            --gold: #d4af37; 
+            --deep-blue: #0a0a1a; 
+            --text: #e0e0e0; 
+            --glass: rgba(255, 255, 255, 0.07);
+        }
+        
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; width: 100%;
+            background: var(--deep-blue); font-family: 'Georgia', serif; 
+            color: var(--text); overflow-x: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a1a 100%);
+            z-index: -1;
+        }
+
+        #game-container { 
+            width: 90%; max-width: 450px; padding: 40px 20px;
+            box-sizing: border-box; text-align: center;
+        }
+        
+        .screen { display: none; width: 100%; animation: fadeIn 1s ease forwards; }
+        .active { display: block; }
+
+        h1 { color: var(--gold); font-style: italic; font-size: clamp(1.4rem, 5vw, 1.8rem); margin-bottom: 15px; letter-spacing: 1px; }
+        
+        .clue-box { 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            padding: clamp(15px, 5vw, 30px); 
+            margin: 20px 0; 
+            background: var(--glass); 
+            border-radius: 12px; 
+            line-height: 1.7;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        p { font-size: 1.05rem; margin-bottom: 10px; }
+
+        input { 
+            background: transparent; border: none; border-bottom: 2px solid var(--gold); 
+            color: white; font-size: 1.2rem; text-align: center; width: 100%; 
+            outline: none; margin-bottom: 25px; padding: 12px 0; 
+            font-family: 'Georgia', serif; transition: 0.3s;
+        }
+        input:focus { border-bottom: 2px solid #fff; }
+
+        .submit-btn { 
+            background: var(--gold); color: var(--deep-blue); 
+            padding: 15px; border: none; cursor: pointer; 
+            font-weight: bold; border-radius: 6px; width: 100%;
+            font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .choice-btn { 
+            background: transparent; border: 1px solid var(--gold); color: var(--gold); 
+            padding: 15px; margin: 8px 0; width: 100%; cursor: pointer; 
+            transition: 0.3s; font-family: 'Georgia', serif; font-size: 1rem; border-radius: 6px;
+        }
+        .choice-btn:active, .choice-btn:hover { background: rgba(212, 175, 55, 0.1); }
+
+        .final-scroll { border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); padding: 30px 15px; margin-top: 20px; }
+        .secret-text { font-size: 1.1rem; line-height: 1.8; color: var(--gold); font-style: italic; text-align: left; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    
+    <div id="stg1" class="screen active">
+        <h1>The Start</h1>
+        <div class="clue-box">
+            <p>Every masterpiece has a date it was started. On what <strong>day of the month</strong> did I confess <strong>my feelings for you?</strong></p>
+        </div>
+        <input type="number" id="ans1" placeholder="Enter the number..." pattern="\d*">
+        <button class="submit-btn" onclick="checkLvl1()">Verify</button>
+    </div>
+
+    <div id="stg2" class="screen">
+        <h1>The Melody</h1>
+        <div class="clue-box">
+            <p>"If our story had a sound,<strong>this would be it</strong>"</p>
+        </div>
+        <input type="text" id="ans2" placeholder="Enter the song name...">
+        <button class="submit-btn" onclick="checkLvl2()">Unlock Memory</button>
+    </div>
+
+    <div id="stg3" class="screen">
+        <h1>The scene</h1>
+        <div class="clue-box">
+            <p>What song did I <strong>dedicate</strong> to you?</p>
+        </div>
+        <input type="text" id="ans3" placeholder="Enter the song">
+        <button class="submit-btn" onclick="checkLvl3()">Verify Song</button>
+    </div>
+
+    <div id="stg4" class="screen">
+        <h1>The Choice</h1>
+        <div class="clue-box">
+            <p>Will you marry me?</p>
+        </div>
+        <button class="choice-btn" onclick="next(5)">YES</button>
+        <button class="choice-btn" onclick="next(5)">I DO</button>
+        <button class="choice-btn" onclick="next(5)">OF COURSE</button>
+    </div>
+
+    <div id="final" class="screen">
+        <h1>No More Question</h1>
+        <div class="final-scroll">
+            <p class="secret-text">
+                "Mahal ko,<br><br>
+                Nais kong hingin ang iyong matamis na 'Oo.' Sa bawat pagsikat at paglubog ng araw, makakaasa kang ako ay maghihintay sa iyo. Nais kong angkinin ang iyong puso, hindi upang maging pag-aari kita, kundi upang maging tahanan mo ako. Isang kanlungan kung saan malaya kang mamahalin.<br><br>
+                Nais kong malaman mo na ikaw ang dahilan ng aking buhay. Sa iyo ko natagpuan ang tunay na kapayapaan sa mundo. Taglay mo ang liwanag na nakakasilaw ngunit hindi nakakasakit, isang liwanag na nagbibigay-gabay sa aking dilim.<br><br>
+                Ikaw ang aking panalangin bawat gabi. Ikaw ang laman ng aking isip at ang tanging sambit ng aking mga labi. Pangalan mo ang nakasanayang bigkasin, at ang boses mo ang tanging himig na nais kong marinig.<br><br>
+                Kung loloobin ng Panginoon, dalangin ko na makatuwang kita habang-buhay. Dahil sa dulo ng lahat, ikaw ang nag-iisang sagot sa lahat ng aking mga panalangin."
+            </p>
+            <br>
+            <p style="color:white; font-size: 0.85rem; opacity: 0.6;">Mahal kita sa tunay na kahulugan ng salita.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const correctDay = 6; // Tanggal 6 (removed the leading zero for safety)
+    const correctSong = "got to believe in magic";
+    const correctPlace = "aphrodite"; 
+
+    function checkLvl1() {
+        // Ginawa nating Number para sigurado ang comparison
+        const val = Number(document.getElementById('ans1').value);
+        if(val === correctDay) {
+            next(2);
+        } else {
+            alert("The memory is a bit dusty... try again.");
+        }
+    }
+
+    function checkLvl2() {
+        const val = document.getElementById('ans2').value.trim().toLowerCase();
+        // Mas safe gamitin ang .includes para kahit may konting typo sa dulo gumana pa rin
+        if(val.includes(correctSong)) {
+            next(3);
+        } else {
+            alert("Clue: check my notes");
+        }
+    }
+
+    function checkLvl3() {
+        const val = document.getElementById('ans3').value.trim().toLowerCase();
+        if(val === correctPlace) {
+            next(4);
+        } else {
+            alert("Think about it");
+        }
+    }
+
+    // Function for your Stage 4 and Stage 5 questions (if applicable)
+    function checkLvl4() {
+        // If Stage 4 is a button, it calls next(5)
+        next(5);
+    }
+
+    function next(stage) {
+        // Itago lahat ng screens
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        
+        // Check kung Stage 5 na (The Riddle)
+        if(stage === 5 || stage === 'final') {
+            document.getElementById('final').classList.add('active');
+        } else {
+            // Siguraduhin na may element na ID ay 'stg1', 'stg2', etc.
+            const nextScreen = document.getElementById('stg' + stage);
+            if(nextScreen) {
+                nextScreen.classList.add('active');
+            }
+        }
+        window.scrollTo(0,0);
+    }
+</script>
